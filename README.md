@@ -30,3 +30,62 @@ cd <Texter-Backend>
 
 ### MongoDB Setup In Application Properties
 <img src="Texter-Backend/assets/mongoConnection.png" alt="Mongodb connection" style="width: 50%; margin: 10px; border-radius: 8px;">
+
+### Entities
+
+#### Room
+- **Class Name**: `Room`
+- **Fields**:
+  - `String id`
+  - `String roomName`
+  - `List<Message> messages`
+
+#### Message
+- **Class Name**: `Message`
+- **Fields**:
+  - `String id`
+  - `String content`
+  - `String sender`
+  - `Date timestamp`
+
+### Repositories
+
+#### Room Repository
+- **Interface Name**: `roomRepo`
+- **Methods**:
+  - `Room findByRoomName(String roomName)`
+
+#### Message Repository
+- **Interface Name**: `messageRepo`
+- **Methods**:
+  - `List<Message> findByRoomId(String roomId)`
+
+### Services
+
+#### Room Services
+- **Class Name**: `roomServices`
+- **Methods**:
+  - `ResponseEntity<?> createRoom(String roomName)`
+  - `ResponseEntity<?> getRoom(String roomId)`
+  - `ResponseEntity<?> getMessages(String roomId)`
+
+#### Message Services
+- **Class Name**: `messageServices`
+- **Methods**:
+  - `ResponseEntity<?> createMessage(String roomId, Message message)`
+  - `ResponseEntity<?> getMessages(String roomId)`
+
+### Controllers
+
+#### Room Controller
+- **Class Name**: `roomController`
+- **Endpoints**:
+  - `POST /api/v1/texter/rooms/createRoom`
+  - `GET /api/v1/texter/rooms/{roomId}`
+  - `GET /api/v1/texter/rooms/{roomId}/messages`
+
+#### Message Controller
+- **Class Name**: `messageController`
+- **Endpoints**:
+  - `POST /api/v1/texter/rooms/{roomId}/messages`
+  - `GET /api/v1/texter/rooms/{roomId}/messages`
