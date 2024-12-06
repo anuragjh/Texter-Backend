@@ -23,7 +23,7 @@ cd <Texter-Backend>
 - Spring Boot DevTools
 - Spring Boot Starter Websocket
 
-<img src="Texter-Backend/assets/SpringIoSetUp.png" alt="Mongodb connection" style="width: 50%; margin: 10px; border-radius: 8px;">
+<img src="Texter-Backend/assets/SpringIoSetUp.png" alt="springIo plugins" style="width: 50%; margin: 10px; border-radius: 8px;">
 
 
 
@@ -89,3 +89,6 @@ cd <Texter-Backend>
 - **Endpoints**:
   - `POST /api/v1/texter/rooms/{roomId}/messages`
   - `GET /api/v1/texter/rooms/{roomId}/messages`
+
+### MongoDB Demo With Room Controllers(API's)
+<img src="Texter-Backend/assets/mongoDemoApiRooms.png" alt="Mongodb demo" style="width: 50%; margin: 10px; border-radius: 8px;">
