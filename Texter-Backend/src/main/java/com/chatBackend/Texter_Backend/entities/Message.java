@@ -7,31 +7,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection = "rooms")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room {
+@Builder
+@Document(collection = "messages")
+public class Message {
 
     @Id
     private String id;
 
-    @Indexed(unique = true)
+    @Indexed
     private String roomCode;
 
-    private String roomName;
+    private String content;
 
-    private boolean active;
+    private String senderId;
 
-    private boolean isPrivate;
+    private String senderName;
 
-    private String adminSessionId;
+    private MessageType type;
 
-    private int maxParticipants;
-
+    @Indexed
     private Instant createdAt;
 
-    private Instant expiresAt;
+    private boolean edited;
+
+    private boolean deleted;
 }

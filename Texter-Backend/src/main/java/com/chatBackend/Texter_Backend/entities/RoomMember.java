@@ -7,31 +7,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection = "rooms")
+@Document(collection = "room_members")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room {
+public class RoomMember {
 
     @Id
     private String id;
 
-    @Indexed(unique = true)
+    @Indexed
     private String roomCode;
 
-    private String roomName;
+    @Indexed
+    private String sessionId;
 
-    private boolean active;
+    private String nickname;
 
-    private boolean isPrivate;
+    private boolean admin;
 
-    private String adminSessionId;
+    private Instant joinedAt;
 
-    private int maxParticipants;
-
-    private Instant createdAt;
-
-    private Instant expiresAt;
 }
