@@ -14,4 +14,6 @@ public interface MessageRepository extends MongoRepository<Message, String> {
             String roomCode,
             Pageable pageable
     );
+
+    void deleteByRoomCode(String roomCode);
 }

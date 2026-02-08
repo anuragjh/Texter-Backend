@@ -32,8 +32,6 @@ public class MessageService {
         this.messagingTemplate = messagingTemplate;
     }
 
-
-
     public Message sendChatMessage(
             ChatMessageDTO dto,
             String sessionId
@@ -43,10 +41,8 @@ public class MessageService {
             throw new RuntimeException("Too many messages. Slow down.");
         }
 
-
         roomRepository.findByRoomCode(dto.getRoomCode())
                 .orElseThrow(() -> new RuntimeException("Room not found"));
-
 
         boolean isMember = memberRepository
                 .findByRoomCode(dto.getRoomCode())
@@ -70,7 +66,6 @@ public class MessageService {
 
         Message saved = messageRepository.save(message);
 
-
         messagingTemplate.convertAndSend(
                 "/topic/room/" + dto.getRoomCode(),
                 saved
@@ -78,8 +73,6 @@ public class MessageService {
 
         return saved;
     }
-
-
 
     public void broadcastSystemMessage(
             String roomCode,
@@ -101,5 +94,9 @@ public class MessageService {
                 "/topic/room/" + roomCode,
                 saved
         );
+    }
+
+    public void system(String roomCode, String text) {
+        broadcastSystemMessage(roomCode, text);
     }
 }

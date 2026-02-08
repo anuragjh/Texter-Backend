@@ -16,15 +16,18 @@ public class RoomAdminService {
     private final RoomRepository roomRepository;
     private final JoinRequestRepository joinRequestRepository;
     private final RoomMemberRepository memberRepository;
+    private final MessageService messageService;
 
     public RoomAdminService(
             RoomRepository roomRepository,
             JoinRequestRepository joinRequestRepository,
-            RoomMemberRepository memberRepository
+            RoomMemberRepository memberRepository,
+            MessageService messageService
     ) {
         this.roomRepository = roomRepository;
         this.joinRequestRepository = joinRequestRepository;
         this.memberRepository = memberRepository;
+        this.messageService = messageService;
     }
 
     public void approveJoin(
@@ -56,26 +59,31 @@ public class RoomAdminService {
         );
 
         joinRequestRepository.delete(req);
-    }
-	public void kickUser(
-        String roomCode,
-        String adminSessionId,
-        String username
-) {
-    Room room = roomRepository.findByRoomCode(roomCode)
-            .orElseThrow(() -> new RuntimeException("Room not found"));
 
-    if (!room.getAdminSessionId().equals(adminSessionId)) {
-        throw new RuntimeException("Not admin");
+        messageService.system(roomCode, req.getNickname() + " joined the room");
     }
 
-    memberRepository.findByRoomCode(roomCode).stream()
-            .filter(m -> m.getNickname().equalsIgnoreCase(username))
-            .findFirst()
-            .ifPresentOrElse(
-                    memberRepository::delete,
-                    () -> { throw new RuntimeException("User not found"); }
-            );
-}
+    public void kickUser(
+            String roomCode,
+            String adminSessionId,
+            String username
+    ) {
+        Room room = roomRepository.findByRoomCode(roomCode)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
 
+        if (!room.getAdminSessionId().equals(adminSessionId)) {
+            throw new RuntimeException("Not admin");
+        }
+
+        memberRepository.findByRoomCode(roomCode).stream()
+                .filter(m -> m.getNickname().equalsIgnoreCase(username))
+                .findFirst()
+                .ifPresentOrElse(
+                        member -> {
+                            memberRepository.delete(member);
+                            messageService.system(roomCode, member.getNickname() + " was kicked by admin");
+                        },
+                        () -> { throw new RuntimeException("User not found"); }
+                );
+    }
 }

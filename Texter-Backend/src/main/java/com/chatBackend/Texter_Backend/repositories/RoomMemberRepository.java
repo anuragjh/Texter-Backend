@@ -13,4 +13,6 @@ public interface RoomMemberRepository
     long countByRoomCode(String roomCode);
 
     void deleteByRoomCodeAndSessionId(String roomCode, String sessionId);
+
+    void deleteByRoomCode(String roomCode);
 }

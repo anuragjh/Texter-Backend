@@ -15,10 +15,12 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository memberRepository;
+    private final MessageService messageService;
 
-    public RoomService(RoomRepository roomRepository, RoomMemberRepository memberRepository) {
+    public RoomService(RoomRepository roomRepository, RoomMemberRepository memberRepository, MessageService messageService) {
         this.roomRepository = roomRepository;
         this.memberRepository = memberRepository;
+        this.messageService = messageService;
     }
 
     @Transactional
@@ -32,12 +34,10 @@ public class RoomService {
             throw new IllegalArgumentException("Session ID required");
         }
 
-
         String roomCode;
         do {
             roomCode = RoomCodeGenerator.generate(5);
         } while (roomRepository.existsByRoomCode(roomCode));
-
 
         Room room = Room.builder()
                 .roomCode(roomCode)
@@ -51,7 +51,6 @@ public class RoomService {
                 .build();
 
         Room savedRoom = roomRepository.save(room);
-
 
         RoomMember adminMember = RoomMember.builder()
                 .roomCode(roomCode)
@@ -68,6 +67,9 @@ public class RoomService {
 
     public void destroyRoom(String roomCode) {
         roomRepository.findByRoomCode(roomCode)
-                .ifPresent(roomRepository::delete);
+                .ifPresent(room -> {
+                    messageService.system(roomCode, "Room was destroyed by admin");
+                    roomRepository.delete(room);
+                });
     }
 }

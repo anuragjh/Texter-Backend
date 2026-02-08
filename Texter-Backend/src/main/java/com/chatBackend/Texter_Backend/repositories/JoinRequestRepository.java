@@ -9,4 +9,6 @@ public interface JoinRequestRepository
         extends MongoRepository<JoinRequest, String> {
 
     List<JoinRequest> findByRoomCode(String roomCode);
+
+    void deleteByRoomCode(String roomCode);
 }

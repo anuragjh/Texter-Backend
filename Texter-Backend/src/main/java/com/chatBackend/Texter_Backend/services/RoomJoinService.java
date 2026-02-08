@@ -17,15 +17,18 @@ public class RoomJoinService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository memberRepository;
     private final JoinRequestRepository joinRequestRepository;
+    private final MessageService messageService;
 
     public RoomJoinService(
             RoomRepository roomRepository,
             RoomMemberRepository memberRepository,
-            JoinRequestRepository joinRequestRepository
+            JoinRequestRepository joinRequestRepository,
+            MessageService messageService
     ) {
         this.roomRepository = roomRepository;
         this.memberRepository = memberRepository;
         this.joinRequestRepository = joinRequestRepository;
+        this.messageService = messageService;
     }
 
     public JoinRoomResponse joinRoom(
@@ -49,7 +52,6 @@ public class RoomJoinService {
             throw new RuntimeException("Username already taken");
         }
 
-
         if (room.isPrivate()) {
             joinRequestRepository.save(
                     JoinRequest.builder()
@@ -61,7 +63,6 @@ public class RoomJoinService {
             );
             return JoinRoomResponse.builder().status("PENDING").build();
         }
-
 
         boolean isFirstUser = memberRepository.countByRoomCode(roomCode) == 0;
 
@@ -79,6 +80,8 @@ public class RoomJoinService {
             room.setAdminSessionId(sessionId);
             roomRepository.save(room);
         }
+
+        messageService.system(roomCode, username + " joined the room");
 
         return JoinRoomResponse.builder().status("JOINED").build();
     }
